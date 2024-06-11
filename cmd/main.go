@@ -1,18 +1,17 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"ymatchu-backend/student"
 )
 
 func main(){
-	mux := http.NewServeMux()
 	studentMux := student.InitializeStudentRoutes()
-	mux.Handle("/student", studentMux)
-	err :=  http.ListenAndServe("localhost:8080", mux )
+	mux:= http.NewServeMux()
+	mux.Handle("/student/", http.StripPrefix("/student", studentMux))
 
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	// mux.Handle("/landlord/", http.StripPrefix("/landlord", landlordMux))
+
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }
