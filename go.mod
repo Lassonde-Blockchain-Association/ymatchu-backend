@@ -1,4 +1,4 @@
-module ymatchu-backend
+module ymatchu_backend
 
 go 1.22.2
 
