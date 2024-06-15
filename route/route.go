@@ -3,7 +3,6 @@ package route
 import (
 	// go fiber
 	"ymatchu_backend/student"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,6 +19,8 @@ func RouteInit() *fiber.App {
 	})
 
 	// student
+	student := student.Student{}
+	// student.DB = db
 	app.Post("/student/filterRequest", student.Filter)
 	// post listingDetails
 	app.Post("/student/listingDetails/:id", student.ListingDetails)
