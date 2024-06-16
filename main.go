@@ -10,7 +10,7 @@ import (
 )
 
 func createListingDetails(w http.ResponseWriter, r *http.Request) {
-	var listingDetails database.ListingDetails
+	var listingDetails database.Listing
 	db := database.DB
 	if err := json.NewDecoder(r.Body).Decode(&listingDetails); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -18,13 +18,13 @@ func createListingDetails(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create the Listing
-	if err := db.Create(&listingDetails.Listing).Error; err != nil {
+	if err := db.Create(&listingDetails.ID).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// Set the ListingID for the related entities
-	listingID := listingDetails.Listing.ID
+	listingID := listingDetails.ID
 	listingDetails.Utilities.ListingID = listingID
 	listingDetails.Features.ListingID = listingID
 	listingDetails.Location.ListingID = listingID

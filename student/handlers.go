@@ -38,9 +38,8 @@ func (student *Student) Filter(c *fiber.Ctx) error {
 	squareft, err := strconv.Atoi(c.Query("squareft"))
 	if err != nil {
 		squareft = 0
-	} 
+	}
 	db.Scopes(filterFeatures(rooms, washrooms, squareft)).Find(&features)
-
 
 	return c.Status(200).JSON(fiber.Map{
 		"listings": "Filtering Request",
@@ -48,7 +47,7 @@ func (student *Student) Filter(c *fiber.Ctx) error {
 }
 
 func (student *Student) ListingDetails(c *fiber.Ctx) error {
-	// db := student.DB	
+	// db := student.DB
 
 	return c.Status(200).JSON(fiber.Map{
 		"listing":   "Listing Details",
