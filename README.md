@@ -1,15 +1,19 @@
 ### YMATCHU BACKEND
 
-.env
-```
-PORT=5500
+### Setup `.env` file
+
+```env
+PORT=<ENTER PORT>
+DB_USER=<ENTER DB_USER>
+DB_PASSWORD=<ENTER DB_PASSWORD>
+DB_NAME=<ENTER DB_NAME>
+DB_HOST=<ENTER DB_HOST>
+DB_PORT=<ENTER DB_PORT>
 ```
 
-Run
+### To run the project
 
-``` 
-go mod tidy 
+```golang
+go mod tidy
 go run cmd/main.go
 ```
-
-For Live reload check: [air](https://github.com/air-verse/air)

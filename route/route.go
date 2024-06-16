@@ -9,21 +9,22 @@ import (
 
 func RouteInit() *fiber.App {
 	app := fiber.New()
+	api := app.Group("/api/v1")
 
-	app.Get("/", func(c *fiber.Ctx) error {
+	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("YMatchu API")
 	})
 
 	// landlord
-	app.Post("/createListing", func(c *fiber.Ctx) error {
+	api.Post("/landlord/createListing", func(c *fiber.Ctx) error {
 		return c.SendString("Create Listing")
 	})
 
-	app.Post("/updateListing/:id", func(c *fiber.Ctx) error {
+	api.Post("/landlord/updateListing/:id", func(c *fiber.Ctx) error {
 		return c.SendString("Update Listing")
 	})
 
-	app.Post("/deleteListing/:id", func(c *fiber.Ctx) error {
+	api.Post("/landlord/deleteListing/:id", func(c *fiber.Ctx) error {
 		return c.SendString("Delete Listing")
 	})
 
@@ -33,9 +34,9 @@ func RouteInit() *fiber.App {
 	student.DB = database.DB
 
 	//this would filter based on parameters and return the relevant listings
-	app.Post("/:studentID/filterRequest", student.Filter)
+	api.Post("/:studentID/filterRequest", student.Filter)
 
 	// post listingDetails
-	app.Post("/student/listingDetails/:id", student.ListingDetails)
+	api.Post("/student/listingDetails/:id", student.ListingDetails)
 	return app
 }
