@@ -2,7 +2,7 @@ package route
 
 import (
 	// go fiber
-	"ymatchu_backend/student"
+	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/student"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -12,7 +12,7 @@ func RouteInit() *fiber.App {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("YMatchu API")
 	})
-
+	
 	// landlord
 	app.Post("/createListing", func(c *fiber.Ctx) error {
 		return c.SendString("Create Listing")
