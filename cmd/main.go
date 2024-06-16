@@ -2,14 +2,13 @@ package main
 
 import (
 	"log"
-	"ymatchu-backend/route"
+	"os"
+	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/database"
+	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/route"
 )
 
 func main() {
 	app := route.RouteInit()
-
-	log.Fatal(
-		app.Listen(":3000"),
-	)
-
+	database.InitDB()
+	log.Fatal(app.Listen(":" + os.Getenv("PORT")))
 }
