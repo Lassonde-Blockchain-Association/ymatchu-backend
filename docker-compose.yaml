@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USER: <ENTER DB_USER> 
+      DB_PASSWORD: <ENTER DB_PASSWORD>
+      DB_NAME: <ENTER DB_NAME>
+      DB_HOST: <ENTER DB_HOST>
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      DB_USER: <ENTER DB_USER> 
+      DB_PASSWORD: <ENTER DB_PASSWORD>
+      DB_NAME: <ENTER DB_NAME>
+    volumes:
+      - postgres_data:/var/lib/postgresql/data

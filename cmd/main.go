@@ -3,15 +3,12 @@ package main
 import (
 	"log"
 	"os"
-	"ymatchu_backend/route"
-	"github.com/joho/godotenv"
+	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/database"
+	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/route"
 )
 
 func main() {
 	app := route.RouteInit()
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	log.Fatal(app.Listen(":"+ os.Getenv("PORT")))
+	database.InitDB()
+	log.Fatal(app.Listen(":" + os.Getenv("PORT")))
 }
