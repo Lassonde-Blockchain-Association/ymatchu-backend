@@ -2,6 +2,7 @@ package route
 
 import (
 	// go fiber
+	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/database"
 	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/student"
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,7 +21,8 @@ func RouteInit() *fiber.App {
 
 	// student
 	student := student.Student{}
-	// student.DB = db
+	database.InitDB()
+	student.DB = database.DB
 	app.Post("/student/filterRequest", student.Filter)
 	// post listingDetails
 	app.Post("/student/listingDetails/:id", student.ListingDetails)
