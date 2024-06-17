@@ -1,30 +1,74 @@
 package student
 
 import (
+	"net/http"
+
+	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/database"
+	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
-func filterListings(price string) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Where("price <= ?", price).Or("price = ?", "")
+var ReqBody FilteringParams
+
+func (student *Student) Filter(c *fiber.Ctx) error {
+
+	db := student.DB.Session(&gorm.Session{})
+
+	listings := []database.Listing{}
+	body := new(FilteringParams)
+
+	if err := c.BodyParser(body); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
 	}
+
+	ReqBody = *body
+
+	// loads all of listings with price filter, limit to 10
+
+	err := db.Scopes(FilterPrice, FilterLocation, FilterUtilities, FilterFeatures).Limit(10).Find(&listings).Error
+
+	// err := db.Preload(clause.Associations).Where("price <=?", ReqBody.Price).Limit(10).Find(&listings).Error
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Internal server error",
+		})
+	}
+
+	// response := []FilterResponse{}
+	// // iterate through listings and append to response
+	// for _, listing := range listings {
+	// 	response = append(response, FilterResponse{PropertyMedia: listing.PropertyMedia, ListingID: listing.ID})
+	// }
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		// "listings": response,
+		"listing": listings,
+	})
 }
 
-func filterLocation(street string, city string, postal_code string, country string) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Where("street = ? or street = ''", street).Where("city = ? or city = ''", city).Where("postal_code = ? or postal_code = ''", postal_code).Where("country = ? or country = ''", country)
-	}
+func FilterPrice(db *gorm.DB) *gorm.DB {
+	return db.Model(&database.Listing{}).Preload("PropertyMedia").Where("price <= ?", ReqBody.Price)
 }
 
-func filterUtilities(water bool, gas bool, parking int, locker bool) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Where("water_included = ?", water).Where("gas_included = ?", gas).Where("no_parkings <= ?", parking).Where("locker_included = ?", locker)
-	}
+func FilterLocation(db *gorm.DB) *gorm.DB {
+	// return db.Where("city = ? or city =''", ReqBody.Location.City)
+	return db.Where(
+		db.Where("street_name = ?", ReqBody.Location.StreetName).Or("street_name = ''"),
+	).Where(
+		db.Where("city = ?", ReqBody.Location.City).Or("city = ''"),
+	).Where(
+		db.Where("postal_code = ?", ReqBody.Location.PostalCode).Or("postal_code = ''"),
+	).Where(
+		db.Where("country = ?", ReqBody.Location.Country).Or("country = ''"),
+	)
 }
 
+func FilterUtilities(db *gorm.DB) *gorm.DB {
+	return db.Model(&database.Utilities{}).Where("water_included = ?", ReqBody.Utility.WaterIncluded).Where("gas_included = ?", ReqBody.Utility.GasIncluded).Where("no_parkings <= ?", ReqBody.Utility.NoParkings).Where("locker_included = ?", ReqBody.Utility.LockerIncluded)
+}
 
-func filterFeatures(rooms int, washrooms int, squareft int) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Where("no_rooms <=?", rooms).Where("no_washrooms = ?", washrooms).Where("square_ft <= ?", squareft)
-	}
+func FilterFeatures(db *gorm.DB) *gorm.DB {
+	return db.Model(&database.Features{}).Where("no_rooms <=?", ReqBody.Features.NoRooms).Where("no_washrooms = ?", ReqBody.Features.NoWashrooms).Where("square_ft <= ?", ReqBody.Features.SquareFt)
 }
