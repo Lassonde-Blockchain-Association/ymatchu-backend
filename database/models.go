@@ -40,7 +40,7 @@ type Listing struct {
 	Utilities      Utilities       `gorm:"foreignKey:ListingID"`
 	Features       Features        `gorm:"foreignKey:ListingID"`
 	Location       Location        `gorm:"foreignKey:ListingID"`
-	PropertyImages []PropertyMedia `gorm:"foreignKey:ListingID"`
+	// PropertyImages []PropertyMedia `gorm:"foreignKey:ListingID"`
 }
 
 type Utilities struct {
