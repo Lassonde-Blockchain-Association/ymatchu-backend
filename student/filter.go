@@ -6,7 +6,6 @@ import (
 	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/database"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 var ReqBody FilteringParams
@@ -26,8 +25,11 @@ func (student *Student) Filter(c *fiber.Ctx) error {
 
 	ReqBody = *body
 
-	// loads all of listings limitd to 10
-	err := db.Preload(clause.Associations).Limit(10).Find(&listings).Error
+	// loads all of listings with price filter, limit to 10
+
+	err := db.Scopes(FilterPrice, FilterLocation, FilterUtilities, FilterFeatures).Limit(10).Find(&listings).Error
+
+	// err := db.Preload(clause.Associations).Where("price <=?", ReqBody.Price).Limit(10).Find(&listings).Error
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Internal server error",
