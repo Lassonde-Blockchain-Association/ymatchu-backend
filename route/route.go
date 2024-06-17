@@ -3,6 +3,7 @@ package route
 import (
 	// go fiber
 	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/database"
+	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/landlord"
 	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/student"
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,17 +16,24 @@ func RouteInit() *fiber.App {
 	})
 
 	// landlord
-	app.Post("/landlord/createListing", func(c *fiber.Ctx) error {
-		return c.SendString("Create Listing")
-	})
+	// landlord := landlord.Landlord{}
+	database.InitDB()
+	// landlord.DB = database.DB
+	app.Post("/landlord/createListing", landlord.CreateListing)
+	app.Get("/landlord/listing/:id", landlord.GetListingDetails)
+	app.Post("/landlord/updateListing/:id", landlord.UpdateListing)
+	app.Post("/landlord/deleteListing/:id", landlord.DeleteListing)
+	// app.Post("/landlord/createListing", func(c *fiber.Ctx) error {
+	// 	return c.SendString("Create Listing")
+	// })
 
-	app.Post("/landlord/updateListing/:id", func(c *fiber.Ctx) error {
-		return c.SendString("Update Listing")
-	})
+	// app.Post("/landlord/updateListing/:id", func(c *fiber.Ctx) error {
+	// 	return c.SendString("Update Listing")
+	// })
 
-	app.Post("/landlord/deleteListing/:id", func(c *fiber.Ctx) error {
-		return c.SendString("Delete Listing")
-	})
+	// app.Post("/landlord/deleteListing/:id", func(c *fiber.Ctx) error {
+	// 	return c.SendString("Delete Listing")
+	// })
 
 	// student
 	student := student.Student{}
