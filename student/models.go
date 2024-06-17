@@ -34,7 +34,7 @@ type Listing struct {
 	Utilities      Utilities       `json:"utilities"`
 	Features       Features        `json:"features"`
 	Location       Location        `json:"location"`
-	PropertyImages []PropertyImage `json:"property_images"`
+	// PropertyImages []PropertyImage `json:"property_images"`
 }
 
 type Utilities struct {
