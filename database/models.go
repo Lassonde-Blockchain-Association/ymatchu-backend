@@ -4,11 +4,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
 type Base struct {
-	ID string `gorm:"type:uuid;primary_key" json:"id"`
+	ID string `json:"id" gorm:"type:uuid;primary_key"`
 }
 
 type LandlordDetails struct {
@@ -31,23 +32,22 @@ type StudentDetails struct {
 
 type Listing struct {
 	Base
-	LandlordID     string          `gorm:"type:uuid"`
-	Price          int             `json:"price"`
-	Description    *string         `json:"description"`
-	CreatedOn      time.Time       `json:"created_on"`
-	UpdatedOn      *time.Time      `json:"updated_on"`
-	DeletedOn      *bool           `json:"deleted_on"`
-	Utilities      Utilities       `gorm:"foreignKey:ListingID"`
-	Features       Features        `gorm:"foreignKey:ListingID"`
-	Location       Location        `gorm:"foreignKey:ListingID"`
-	PropertyImages []PropertyMedia `gorm:"foreignKey:ListingID"`
+	LandlordID    string          `gorm:"type:uuid"`
+	Price         int             `json:"price"`
+	Description   *string         `json:"description"`
+	CreatedOn     time.Time       `json:"created_on"`
+	UpdatedOn     *time.Time      `json:"updated_on"`
+	DeletedOn     *bool           `json:"deleted_on"`
+	Utilities     Utilities       `gorm:"foreignKey:ListingID"`
+	Features      Features        `gorm:"foreignKey:ListingID"`
+	Location      Location        `gorm:"foreignKey:ListingID"`
+	PropertyMedia []PropertyMedia `gorm:"foreignKey:ListingID"`
 }
 
 type Utilities struct {
 	ListingID      string `gorm:"type:uuid;primary_key" json:"listing_id"`
 	WaterIncluded  bool   `json:"water_included"`
 	GasIncluded    *bool  `json:"gas_included"`
-	HydroIncluded  bool   `json:"hydro_included"`
 	NoParkings     int    `json:"no_parkings"`
 	LockerIncluded *bool  `json:"locker_included"`
 }
@@ -69,9 +69,9 @@ type Location struct {
 }
 
 type PropertyMedia struct {
-	ListingID string   `gorm:"type:uuid;primary_key"`
-	ImageURL  []string `gorm:"type:text[]" json:"image_url"`
-	VideoURL  []string `gorm:"type:text[]" json:"video_url"`
+	ListingID string         `gorm:"type:uuid;primary_key;foreignKey:ListingID;references:Listing.ID"`
+	ImageURL  pq.StringArray `gorm:"type:text[]" json:"image_url"`
+	VideoURL  pq.StringArray `gorm:"type:text[]" json:"video_url"`
 }
 
 // type ListingDetails struct {
