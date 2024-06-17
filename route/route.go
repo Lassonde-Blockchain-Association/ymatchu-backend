@@ -15,15 +15,15 @@ func RouteInit() *fiber.App {
 	})
 
 	// landlord
-	app.Post("/createListing", func(c *fiber.Ctx) error {
+	app.Post("/landlord/createListing", func(c *fiber.Ctx) error {
 		return c.SendString("Create Listing")
 	})
 
-	app.Post("/updateListing/:id", func(c *fiber.Ctx) error {
+	app.Post("/landlord/updateListing/:id", func(c *fiber.Ctx) error {
 		return c.SendString("Update Listing")
 	})
 
-	app.Post("/deleteListing/:id", func(c *fiber.Ctx) error {
+	app.Post("/landlord/deleteListing/:id", func(c *fiber.Ctx) error {
 		return c.SendString("Delete Listing")
 	})
 
