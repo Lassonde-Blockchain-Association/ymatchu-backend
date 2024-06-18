@@ -38,10 +38,10 @@ type Listing struct {
 	CreatedOn     time.Time       `json:"created_on"`
 	UpdatedOn     *time.Time      `json:"updated_on"`
 	DeletedOn     *bool           `json:"deleted_on"`
-	Utilities     Utilities       `gorm:"foreignKey:ListingID"`
-	Features      Features        `gorm:"foreignKey:ListingID"`
-	Location      Location        `gorm:"foreignKey:ListingID"`
-	PropertyMedia []PropertyMedia `gorm:"foreignKey:ListingID"`
+	Utilities     Utilities       
+	Features      Features        
+	Location      Location        
+	PropertyMedia []PropertyMedia 
 }
 
 type Utilities struct {

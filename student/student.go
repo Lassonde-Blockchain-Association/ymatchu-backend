@@ -8,6 +8,7 @@ import (
 
 type Student struct {
 	DB *gorm.DB
+	Error error
 }
 
 type FilteringParams struct {
