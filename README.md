@@ -17,3 +17,15 @@ DB_PORT=<ENTER DB_PORT>
 go mod tidy
 go run cmd/main.go
 ```
+
+### To run project with live reload
+
+##### First install air
+```terminal
+go install github.com/air-verse/air@latest
+```
+##### `.air.toml` is set up so to run project use 
+```terminal
+air
+```
+More info about air [here](https://github.com/air-verse/air)
