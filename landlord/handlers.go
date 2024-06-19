@@ -1,11 +1,57 @@
 package landlord
 
 import (
+	"time"
+
 	"github.com/Lassonde-Blockchain-Association/ymatchu-backend/database"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
+
+var validate = validator.New()
+
+/*
+*Validate Listing Struct
+ */
+
+func validateListing(listing database.Listing) error {
+
+	validateLocationError := validateLocation(listing.Location)
+	if validateLocationError != nil {
+		return validateLocationError
+	}
+
+	validateUtilitiesError := validateUtilities(listing.Utilities)
+	if validateUtilitiesError != nil {
+		return validateUtilitiesError
+	}
+
+	validateFeaturesError := validateFeatures(listing.Features)
+	if validateFeaturesError != nil {
+		return validateFeaturesError
+	}
+
+	validateListingError := validate.Struct(listing)
+	if validateListingError != nil {
+		return validateListingError
+	}
+	return nil
+
+}
+
+func validateLocation(location database.Location) error {
+	return validate.Struct(location)
+}
+
+func validateUtilities(utilities database.Utilities) error {
+	return validate.Struct(utilities)
+}
+
+func validateFeatures(features database.Features) error {
+	return validate.Struct(features)
+}
 
 // CreateListing creates a new listing
 func CreateListing(c *fiber.Ctx) error {
@@ -21,14 +67,24 @@ func CreateListing(c *fiber.Ctx) error {
 		LandlordID:  body.LandlordID,
 		Price:       body.Price,
 		Description: body.Description,
-		CreatedOn:   body.CreatedOn,
+		CreatedOn:   time.Now(),
 	}
 
-	db.Omit(clause.Associations).Create(&listing)
+	validateListingError := validateListing(*body)
 
-	if db.Error != nil {
+	if validateListingError != nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error": db.Error,
+			"err": validateListingError.Error(),
+			"msg": "Invalid payload",
+		})
+	}
+
+	createListingResult := db.Omit(clause.Associations).Create(&listing)
+
+	if createListingResult.Error != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"msg":   "Create listing error",
+			"error": createListingResult.Error,
 		})
 	}
 
@@ -67,6 +123,7 @@ func CreateListing(c *fiber.Ctx) error {
 	db.Save(&listing)
 	return c.Status(200).JSON(listing)
 }
+
 // UpdateListing updates a listing
 func UpdateListing(c *fiber.Ctx) error {
 	db := database.DB

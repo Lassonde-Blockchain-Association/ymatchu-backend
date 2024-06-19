@@ -28,9 +28,9 @@ func createListingDetails(w http.ResponseWriter, r *http.Request) {
 	listingDetails.Utilities.ListingID = listingID
 	listingDetails.Features.ListingID = listingID
 	listingDetails.Location.ListingID = listingID
-	for i := range listingDetails.PropertyImages {
-		listingDetails.PropertyImages[i].ListingID = listingID
-	}
+	// for i := range listingDetails.PropertyImages {
+	// 	listingDetails.PropertyImages[i].ListingID = listingID
+	// }
 
 	// Create related entities
 	if err := db.Create(&listingDetails.Utilities).Error; err != nil {
@@ -45,10 +45,10 @@ func createListingDetails(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if err := db.Create(&listingDetails.PropertyImages).Error; err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// if err := db.Create(&listingDetails.PropertyImages).Error; err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
 
 	json.NewEncoder(w).Encode(listingDetails)
 }
